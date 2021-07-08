@@ -52,7 +52,13 @@ var createTaskEl = function(taskDataObj) {
   // create task actions (buttons and select) for task
   var taskActionsEl = createTaskActions(taskIdCounter);
   listItemEl.appendChild(taskActionsEl);
-  tasksToDoEl.appendChild(listItemEl);
+  if (!taskDataObj || taskDataObj.status === "to do") {
+    tasksToDoEl.appendChild(listItemEl);
+  } else if (taskDataObj.status === "in progress") {
+    tasksInProgressEl.appendChild(listItemEl);
+  } else if (taskDataObj.status === "completed") {
+    tasksCompletedEl.appendChild(listItemEl);
+  }
 
   taskDataObj.id = taskIdCounter;
   tasks.push(taskDataObj);
@@ -131,11 +137,9 @@ var taskButtonHandler = function(event) {
   var targetEl = event.target;
 
   if (targetEl.matches(".edit-btn")) {
-    console.log("edit", targetEl);
     var taskId = targetEl.getAttribute("data-task-id");
     editTask(taskId);
   } else if (targetEl.matches(".delete-btn")) {
-    console.log("delete", targetEl);
     var taskId = targetEl.getAttribute("data-task-id");
     deleteTask(taskId);
   }
@@ -168,17 +172,14 @@ var taskStatusChangeHandler = function(event) {
 };
 
 var editTask = function(taskId) {
-  console.log(taskId);
 
   // get task list item element
   var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
 
   // get content from task name and type
   var taskName = taskSelected.querySelector("h3.task-name").textContent;
-  console.log(taskName);
 
   var taskType = taskSelected.querySelector("span.task-type").textContent;
-  console.log(taskType);
 
   // write values of taskname and taskType to form to be edited
   document.querySelector("input[name='task-name']").value = taskName;
@@ -191,7 +192,6 @@ var editTask = function(taskId) {
 };
 
 var deleteTask = function(taskId) {
-  console.log(taskId);
   // find task list element with taskId value and remove it
   var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
   taskSelected.remove();
@@ -221,6 +221,8 @@ if (!savedTasks) {
 }
 
 savedTasks = JSON.parse(savedTasks);
+
+console.log(savedTasks);
 
 for (let i = 0; i < savedTasks.length; i++) {
   createTaskEl(savedTasks[i]);
