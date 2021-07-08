@@ -239,3 +239,4 @@ pageContentEl.addEventListener("click", taskButtonHandler);
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
 
 loadTasks();
+localStorage.setItem("message", "Hi Sedona!");
